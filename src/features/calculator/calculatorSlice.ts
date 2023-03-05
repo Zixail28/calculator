@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = "";
+const initialState: string = "";
 
 export const calculatorSlice = createSlice({
   initialState,
   name: "calculator",
   reducers: {
     setText(state, action) {
-      state = action.payload;
+      return action.payload;
     },
   }
 });
