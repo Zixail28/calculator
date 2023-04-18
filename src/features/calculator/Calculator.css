@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@500&display=swap');
 
+:root {
+  --border-radius: 0.4rem;
+}
+
 * {
   font-family: 'Ubuntu', sans-serif;
   transition: .3s;
@@ -14,18 +18,29 @@ main {
   height: 100vh;
 }
 
+.calculator-container {
+  width: min-content;
+}
+
+.handler {
+  width: 100%;
+  height: 1rem;
+  background: #0a0b0e;
+  cursor: move;
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
 .container {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   width: 256px;
-  top: 50%;
-  left: 50%;
-  position: absolute;
-  transform: translate(-50%, -50%);
   background-color: #101116;
   padding: 5px;
-  border-radius: 5px;
+  
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .keypad {

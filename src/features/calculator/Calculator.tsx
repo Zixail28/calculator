@@ -2,22 +2,23 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { calculatorSlice } from "./calculatorSlice";
 import "./Calculator.css";
+import { DndContext } from "@dnd-kit/core";
+import DroppableContainer from "./DroppableContainer/DroppableContainer";
+import DraggableElement from "./DraggableElement/DraggableElement";
 
 export const Calculator: React.FC<any> = (props): JSX.Element => {
-  const [result, setResult] = React.useState<string>("");
 
-  const text = useAppSelector((state) => state.calculatorSlice);
-  const { setText } = calculatorSlice.actions;
+  const {text, position} = useAppSelector((state) => state.calculatorSlice);
+  const { setText, setPosition } = calculatorSlice.actions;
   const dispatch = useAppDispatch();
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-
     const el = e.target as HTMLButtonElement;
     if (el.name === "Clear") {
       return dispatch(setText(""));
     }
     if (el.name === "C") {
-      return dispatch(setText(text.toString().slice(0, -1)))
+      return dispatch(setText(text.toString().slice(0, -1)));
     }
     if (el.name === "=") {
       try {
@@ -32,7 +33,13 @@ export const Calculator: React.FC<any> = (props): JSX.Element => {
     }
     function print(op: string) {
       const lastChar = text[text.length - 1];
-      if ((lastChar === "/" || lastChar === "*" || lastChar === "+" || lastChar === "-") && /[+\-*/]/.test(op)) {
+      if (
+        (lastChar === "/" ||
+          lastChar === "*" ||
+          lastChar === "+" ||
+          lastChar === "-") &&
+        /[+\-*/]/.test(op)
+      ) {
         dispatch(setText(text.slice(0, -1).toString().concat(op)));
       } else {
         dispatch(setText(text.toString().concat(op)));
@@ -40,31 +47,19 @@ export const Calculator: React.FC<any> = (props): JSX.Element => {
     }
   };
 
+  const handleDragEnd = (event: any) => {
+    console.log(event);
+    const {delta} = event;
+    dispatch(setPosition({x: delta.x, y: delta.y}))
+  };
+
+  
+
   return (
-    <main>
-      <div className="container">
-        <input type="text" value={text} readOnly={true} />
-        <div className="keypad" onClick={handleClick}>
-          <button name="Clear">Clear</button>
-          <button name="C">C</button>
-          <button name="/">&divide;</button>
-          <button name="7">7</button>
-          <button name="8">8</button>
-          <button name="9">9</button>
-          <button name="*">&times;</button>
-          <button name="4">4</button>
-          <button name="5">5</button>
-          <button name="6">6</button>
-          <button name="-">&ndash;</button>
-          <button name="1">1</button>
-          <button name="2">2</button>
-          <button name="3">3</button>
-          <button name="+">+</button>
-          <button name="0">0</button>
-          <button name=".">.</button>
-          <button name="=">=</button>
-        </div>
-      </div>
-    </main>
+    <DndContext onDragEnd={handleDragEnd}>
+      <DroppableContainer>
+        <DraggableElement text={text} handleClick={handleClick} position={position}></DraggableElement>
+      </DroppableContainer>
+    </DndContext>
   );
 };
